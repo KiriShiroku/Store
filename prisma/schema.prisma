@@ -1,0 +1,87 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "mysql"
+    url      = env("DATABASE_URL")
+}
+
+// Definición de la tabla "tienda"
+model tienda {
+    id_str    Int        @id
+    nom_str   String
+    tel_str   String
+    email_str String
+    st_str    String
+    cit_str   String
+    stat_str  String
+    cp_str    Int
+    empleado  empleado[]
+}
+
+// Definición de la tabla "empleado"
+model empleado {
+    id_emp    Int     @id
+    nom_emp   String
+    ape_emp   String
+    tel_emp   String
+    email_emp String
+    sal_emp   Int
+    id_str2   Int
+    tienda    tienda  @relation(fields: [id_str2], references: [id_str])
+    orden     orden[]
+}
+
+// Definición de la tabla "cliente"
+model cliente {
+    id_cli    Int     @id
+    nom_cli   String
+    ape_cli   String
+    tel_cli   String
+    email_cli String
+    dir_cli   String
+    cp_cli    Int
+    orden     orden[]
+}
+
+// Definición de la tabla "producto"
+model producto {
+    id_pro   Int     @id
+    nom_pro  String
+    pric_pro Int
+    stock    stock[]
+    orden    orden[]
+}
+
+// Definición de la tabla "stock"
+model stock {
+    id_pro2  Int	@unique
+    quan_pro Int
+
+    producto producto @relation(fields: [id_pro2], references: [id_pro])
+}
+
+// Definición de la tabla "platillo"
+model platillo {
+    id_pla   Int     @id
+    nom_pla  String
+    pric_pla Int
+    orden    orden[]
+}
+
+// Definición de la tabla "orden"
+model orden {
+    id_ord   Int      @id
+    dat_ord  DateTime
+    cant_ord Int
+    id_cli1  Int
+    id_pla1  Int
+    id_emp1  Int
+    id_pro1  Int
+
+    cliente  cliente  @relation(fields: [id_cli1], references: [id_cli])
+    platillo platillo @relation(fields: [id_pla1], references: [id_pla])
+    empleado empleado @relation(fields: [id_emp1], references: [id_emp])
+    producto producto @relation(fields: [id_pro1], references: [id_pro])
+}
